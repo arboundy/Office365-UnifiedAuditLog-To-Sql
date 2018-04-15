@@ -1,5 +1,5 @@
 
-#<#
+<#
 $Credential = Get-Credential
 $ExchangeSession = New-PSSession `
     -ConfigurationName Microsoft.Exchange `
@@ -8,11 +8,11 @@ $ExchangeSession = New-PSSession `
     Import-PSSession $ExchangeSession
 #>
 
-$start_date = (get-date).AddDays(-1).ToString('MM/dd/yyy')
+$start_date = (get-date).AddDays(-7).ToString('MM/dd/yyy')
 $end_date = (get-date).ToString('MM/dd/yyy')
 $filestamp = (get-date).ToString('yyyyMMdd')
 
-$results = Search-UnifiedAuditLog -StartDate $start_date -EndDate $end_date -SessionCommand ReturnLargeSet -ResultSize 1000 -RecordType AzureActiveDirectoryAccountLogon
+$results = Search-UnifiedAuditLog -StartDate $start_date -EndDate $end_date -SessionCommand ReturnLargeSet -ResultSize 5000 #-RecordType AzureActiveDirectoryAccountLogon
 $results | Out-File result.txt
 
 $oUnifiedAuditLogs = @()
@@ -36,7 +36,29 @@ foreach ($result in $results) {
 
     $oAuditData = convertfrom-json $result.AuditData
 
+    
+    if($result.RecordType -eq 'PowerBIAudit') {
+        $oItem = ConvertFrom-Json –InputObject $result.AuditData
+        $oItem | Add-Member –MemberType NoteProperty –Name UnifiedAuditLogIdentity –Value $result.Identity
+        $oItem += $oItem
+    }
+
+    if($result.RecordType -eq 'AzureActiveDirectoryAccountLogon') {
+        $oItem = ConvertFrom-Json –InputObject $result.AuditData
+        $oItem | Add-Member –MemberType NoteProperty –Name UnifiedAuditLogIdentity –Value $result.Identity
+        $oItem | Add-Member –MemberType NoteProperty –Name ExtendedPropertiesName –Value $result.AuditData.ExtendedProperties[0].Name
+        $oItem | Add-Member –MemberType NoteProperty –Name ExtendedPropertiesValue –Value $result.AuditData.ExtendedProperties[0].Value 
+        $oAzureActiveDirectoryAccountLogons += $oItem
+    }
+
     if($result.RecordType -eq 'ExchangeItem') {
+        $oItem = ConvertFrom-Json –InputObject $result.AuditData
+        $oItem | Add-Member –MemberType NoteProperty –Name UnifiedAuditLogIdentity –Value $result.Identity
+        $oExchangeItems += $oItem
+    }
+
+
+<#     if($result.RecordType -eq 'ExchangeItem') {
         $oExchangeItem = New-Object –TypeName PSObject
         $oExchangeItem | Add-Member –MemberType NoteProperty –Name UnifiedAuditLogIdentity –Value $result.Identity
         $oExchangeItem | Add-Member –MemberType NoteProperty –Name CreationTime –Value $oAuditData.CreationTime
@@ -57,7 +79,7 @@ foreach ($result in $results) {
         $oExchangeItem | Add-Member –MemberType NoteProperty –Name OrganziationalName –Value $oAuditData.OrganziationalName
         $oExchangeItem | Add-Member –MemberType NoteProperty –Name OriginatingServer –Value $oAuditData.OriginatingServer
         $oExchangeItems += $oExchangeItem
-    }    
+    }     #>
 
     if($result.RecordType -eq 'AzureActiveDirectoryStsLogon') {
         $oAzureActiveDirectoryStsLogon = New-Object –TypeName PSObject
@@ -88,7 +110,7 @@ foreach ($result in $results) {
         $oAzureActiveDirectoryStsLogons += $oAzureActiveDirectoryStsLogon
     }
 
-    if($result.RecordType -eq 'PowerBIAudit') {
+<#     if($result.RecordType -eq 'PowerBIAudit') {
         $oPowerBIAudit = New-Object –TypeName PSObject
         $oPowerBIAudit | Add-Member –MemberType NoteProperty –Name UnifiedAuditLogIdentity –Value $result.Identity
         $oPowerBIAudit | Add-Member –MemberType NoteProperty –Name Id –Value $oAuditData.Id
@@ -113,10 +135,12 @@ foreach ($result in $results) {
         $oPowerBIAudit | Add-Member –MemberType NoteProperty –Name ReportId –Value $oAuditData.ReportId
         $oPowerBIAudit | Add-Member –MemberType NoteProperty –Name IsSuccess –Value $oAuditData.IsSuccess
         $oPowerBIAudits += $oPowerBIAudit
-    }
+    } #>
 
+
+ <# 
     if($result.RecordType -eq 'AzureActiveDirectoryAccountLogon') {
-        $oAzureActiveDirectoryAccountLogon = New-Object –TypeName PSObject
+       $oAzureActiveDirectoryAccountLogon = New-Object –TypeName PSObject
         $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name UnifiedAuditLogIdentity –Value $result.Identity
         $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name Id –Value $oAuditData.Id
         $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name CreationTime –Value $oAuditData.CreationTime
@@ -136,9 +160,9 @@ foreach ($result in $results) {
         $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name LoginStatus –Value $oAuditData.LoginStatus
         $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name UserDomain –Value $oAuditData.UserDomain
         $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name ExtendedPropertiesName –Value $oAuditData.ExtendedProperties[0].Name
-        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name ExtendedPropertiesValue –Value $oAuditData.ExtendedProperties[0].Value
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name ExtendedPropertiesValue –Value $oAuditData.ExtendedProperties[0].Value 
         $oAzureActiveDirectoryAccountLogons += $oAzureActiveDirectoryAccountLogon
-    }
+    }#>
 }
 $oUnifiedAuditLogs | Export-Csv -NoTypeInformation "oUnifiedAuditLogs-$filestamp.csv"
 $oExchangeItems | Export-Csv -NoTypeInformation "oExchangeItems-$filestamp.csv"
