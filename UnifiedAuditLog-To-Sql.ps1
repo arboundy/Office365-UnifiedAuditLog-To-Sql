@@ -1,5 +1,5 @@
 
-<#
+#<#
 $Credential = Get-Credential
 $ExchangeSession = New-PSSession `
     -ConfigurationName Microsoft.Exchange `
@@ -8,7 +8,7 @@ $ExchangeSession = New-PSSession `
     Import-PSSession $ExchangeSession
 #>
 
-$start_date = (get-date).AddDays(-7).ToString('MM/dd/yyy')
+$start_date = (get-date).AddDays(-1).ToString('MM/dd/yyy')
 $end_date = (get-date).ToString('MM/dd/yyy')
 $filestamp = (get-date).ToString('yyyyMMdd')
 
