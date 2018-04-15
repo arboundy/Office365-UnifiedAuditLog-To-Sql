@@ -81,11 +81,33 @@ foreach ($result in $results) {
 }
 
 
-$oUnifiedAuditLogs | Export-Csv -NoTypeInformation "oUnifiedAuditLogs-$filestamp.csv"
-$oExchangeItems | Export-Csv -NoTypeInformation "oExchangeItems-$filestamp.csv"
-$oAzureActiveDirectoryStsLogons | Export-Csv -NoTypeInformation "oAzureActiveDirectoryStsLogons-$filestamp.csv"
-$oPowerBIAudits | Export-Csv -NoTypeInformation "oPowerBIAudits-$filestamp.csv"
-$oAzureActiveDirectoryAccountLogons | Export-Csv -NoTypeInformation "oAzureActiveDirectoryAccountLogons-$filestamp.csv"
+$oAzureActiveDirectory | Export-Csv -NoTypeInformation "$filestamp-AzureActiveDirectory.csv"
+$oAzureActiveDirectoryAccountLogon | Export-Csv -NoTypeInformation "$filestamp-AzureActiveDirectoryAccountLogon.csv"
+$oAzureActiveDirectoryStsLogon | Export-Csv -NoTypeInformation "$filestamp-AzureActiveDirectoryStsLogon.csv"
+$oComplianceDLPExchange | Export-Csv -NoTypeInformation "$filestamp-ComplianceDLPExchange.csv"
+$oComplianceDLPSharePoint | Export-Csv -NoTypeInformation "$filestamp-ComplianceDLPSharePoint.csv"
+$oCRM | Export-Csv -NoTypeInformation "$filestamp-CRM.csv"
+$oDataCenterSecurityCmdlet | Export-Csv -NoTypeInformation "$filestamp-DataCenterSecurityCmdlet.csv"
+$oDiscovery | Export-Csv -NoTypeInformation "$filestamp-Discovery.csv"
+$oExchangeAdmin | Export-Csv -NoTypeInformation "$filestamp-ExchangeAdmin.csv"
+$oExchangeAggregatedOperation | Export-Csv -NoTypeInformation "$filestamp-ExchangeAggregatedOperation.csv"
+$oExchangeItem | Export-Csv -NoTypeInformation "$filestamp-ExchangeItem.csv"
+$oExchangeItemGroup | Export-Csv -NoTypeInformation "$filestamp-ExchangeItemGroup.csv"
+$oMicrosoftTeams | Export-Csv -NoTypeInformation "$filestamp-MicrosoftTeams.csv"
+$oMicrosoftTeamsAddOns | Export-Csv -NoTypeInformation "$filestamp-MicrosoftTeamsAddOns.csv"
+$oMicrosoftTeamsSettingsOperation | Export-Csv -NoTypeInformation "$filestamp-MicrosoftTeamsSettingsOperation.csv"
+$oOneDrive | Export-Csv -NoTypeInformation "$filestamp-OneDrive.csv"
+$oPowerBIAudit | Export-Csv -NoTypeInformation "$filestamp-PowerBIAudit.csv"
+$oSecurityComplianceCenterEOPCmdlet | Export-Csv -NoTypeInformation "$filestamp-SecurityComplianceCenterEOPCmdlet.csv"
+$oSharePoint | Export-Csv -NoTypeInformation "$filestamp-SharePoint.csv"
+$oSharePointFileOperation | Export-Csv -NoTypeInformation "$filestamp-SharePointFileOperation.csv"
+$oSharePointSharingOperation | Export-Csv -NoTypeInformation "$filestamp-SharePointSharingOperation.csv"
+$oSkypeForBusinessCmdlets | Export-Csv -NoTypeInformation "$filestamp-SkypeForBusinessCmdlets.csv"
+$oSkypeForBusinessPSTNUsage | Export-Csv -NoTypeInformation "$filestamp-SkypeForBusinessPSTNUsage.csv"
+$oSkypeForBusinessUsersBlocked | Export-Csv -NoTypeInformation "$filestamp-SkypeForBusinessUsersBlocked.csv"
+$oSway | Export-Csv -NoTypeInformation "$filestamp-Sway.csv"
+$oThreatIntelligence | Export-Csv -NoTypeInformation "$filestamp-ThreatIntelligence.csv"
+$oYammer | Export-Csv -NoTypeInformation "$filestamp-Yammer.csv"
 
 <#
 AzureActiveDirectory
