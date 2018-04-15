@@ -12,13 +12,14 @@ $start_date = (get-date).AddDays(-7).ToString('MM/dd/yyy')
 $end_date = (get-date).ToString('MM/dd/yyy')
 $filestamp = (get-date).ToString('yyyyMMdd')
 
-$results = Search-UnifiedAuditLog -StartDate $start_date -EndDate $end_date -SessionCommand ReturnLargeSet -ResultSize 1000 -RecordType PowerBIAudit
+$results = Search-UnifiedAuditLog -StartDate $start_date -EndDate $end_date -SessionCommand ReturnLargeSet -ResultSize 1000 -RecordType AzureActiveDirectoryAccountLogon
 $results | Out-File result.txt
 
 $oUnifiedAuditLogs = @()
 $oExchangeItems = @()
 $oAzureActiveDirectoryStsLogons = @()
 $oPowerBIAudits = @()
+$oAzureActiveDirectoryAccountLogons = @()
 
 foreach ($result in $results) {
     $oUnifiedAuditLog = New-Object –TypeName PSObject
@@ -113,12 +114,37 @@ foreach ($result in $results) {
         $oPowerBIAudit | Add-Member –MemberType NoteProperty –Name IsSuccess –Value $oAuditData.IsSuccess
         $oPowerBIAudits += $oPowerBIAudit
     }
+
+    if($result.RecordType -eq 'AzureActiveDirectoryAccountLogon') {
+        $oAzureActiveDirectoryAccountLogon = New-Object –TypeName PSObject
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name UnifiedAuditLogIdentity –Value $result.Identity
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name Id –Value $oAuditData.Id
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name CreationTime –Value $oAuditData.CreationTime
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name Operation –Value $oAuditData.Operation
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name OrganizationId –Value $oAuditData.OrganizationId
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name RecordType –Value $oAuditData.RecordType
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name ResultStatus –Value $oAuditData.ResultStatus
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name UserKey –Value $oAuditData.UserKey
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name UserType –Value $oAuditData.UserType
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name Version –Value $oAuditData.Version
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name Workload –Value $oAuditData.Workload
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name ClientIP –Value $oAuditData.ClientIP
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name ObjectId –Value $oAuditData.ObjectId
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name UserId –Value $oAuditData.UserId
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name AzureActiveDirectoryEventType –Value $oAuditData.AzureActiveDirectoryEventType
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name Client –Value $oAuditData.Client
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name LoginStatus –Value $oAuditData.LoginStatus
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name UserDomain –Value $oAuditData.UserDomain
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name ExtendedPropertiesName –Value $oAuditData.ExtendedProperties[0].Name
+        $oAzureActiveDirectoryAccountLogon | Add-Member –MemberType NoteProperty –Name ExtendedPropertiesValue –Value $oAuditData.ExtendedProperties[0].Value
+        $oAzureActiveDirectoryAccountLogons += $oAzureActiveDirectoryAccountLogon
+    }
 }
 $oUnifiedAuditLogs | Export-Csv -NoTypeInformation "oUnifiedAuditLogs-$filestamp.csv"
 $oExchangeItems | Export-Csv -NoTypeInformation "oExchangeItems-$filestamp.csv"
 $oAzureActiveDirectoryStsLogons | Export-Csv -NoTypeInformation "oAzureActiveDirectoryStsLogons-$filestamp.csv"
 $oPowerBIAudits | Export-Csv -NoTypeInformation "oPowerBIAudits-$filestamp.csv"
-
+$oAzureActiveDirectoryAccountLogons | Export-Csv -NoTypeInformation "oAzureActiveDirectoryAccountLogons-$filestamp.csv"
 
 <#
 AzureActiveDirectory
