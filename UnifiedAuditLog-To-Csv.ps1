@@ -8,7 +8,7 @@ $ExchangeSession = New-PSSession `
 #>
 
 $filestamp = (get-date).ToString('yyyyMMddhhmmss')
-
+ 
 $recordtypes = @("AzureActiveDirectory","AzureActiveDirectoryAccountLogon",
     "AzureActiveDirectoryStsLogon","ComplianceDLPExchange","ComplianceDLPSharePoint",
     "CRM","DataCenterSecurityCmdlet","Discovery","ExchangeAdmin",
