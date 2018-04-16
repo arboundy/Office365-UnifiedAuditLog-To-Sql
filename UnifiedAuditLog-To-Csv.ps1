@@ -7,13 +7,9 @@ $ExchangeSession = New-PSSession `
     Import-PSSession $ExchangeSession
 #>
 
-$start_date = (get-date).AddHours(-8).ToString('MM/dd/yyy')
-$end_date = (get-date).ToString('MM/dd/yyy')
-$filestamp = (get-date).ToString('yyyyMMdd')
+$filestamp = (get-date).ToString('yyyyMMddhhmmss')
 
-$results = Search-UnifiedAuditLog -StartDate $start_date -EndDate $end_date `
-    -SessionCommand ReturnLargeSet `
-    -ResultSize 1000 `
+$results = Search-UnifiedAuditLog -StartDate (get-date).AddHours(-2) -EndDate (get-date) -SessionCommand ReturnLargeSet -ResultSize 5000
     #-RecordType AzureActiveDirectoryAccountLogon
 $results | Out-File result.txt
 
