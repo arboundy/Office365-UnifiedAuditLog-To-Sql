@@ -9,7 +9,7 @@ $ExchangeSession = New-PSSession `
 
 $filestamp = (get-date).ToString('yyyyMMddhhmmss')
 
-$results = Search-UnifiedAuditLog -StartDate (get-date).AddHours(-2) -EndDate (get-date) -SessionCommand ReturnLargeSet -ResultSize 5000
+$results = Search-UnifiedAuditLog -StartDate (get-date).AddMinutes(-60) -EndDate (get-date) -SessionCommand ReturnLargeSet -ResultSize 5000
     #-RecordType AzureActiveDirectoryAccountLogon
 $results | Out-File result.txt
 
