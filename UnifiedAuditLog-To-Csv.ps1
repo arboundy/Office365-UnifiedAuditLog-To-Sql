@@ -7,7 +7,7 @@ $ExchangeSession = New-PSSession `
     Import-PSSession $ExchangeSession
 #>
 
-$start_date = (get-date).AddHours((-24).ToString('MM/dd/yyy')
+$start_date = (get-date).AddHours(-8).ToString('MM/dd/yyy')
 $end_date = (get-date).ToString('MM/dd/yyy')
 $filestamp = (get-date).ToString('yyyyMMdd')
 
