@@ -9,6 +9,16 @@ $ExchangeSession = New-PSSession `
 
 $filestamp = (get-date).ToString('yyyyMMddhhmmss')
 
+$recordtypes = @("AzureActiveDirectory","AzureActiveDirectoryAccountLogon",
+    "AzureActiveDirectoryStsLogon","ComplianceDLPExchange","ComplianceDLPSharePoint",
+    "CRM","DataCenterSecurityCmdlet","Discovery","ExchangeAdmin",
+    "ExchangeAggregatedOperation","ExchangeItem","ExchangeItemGroup",
+    "MicrosoftTeams","MicrosoftTeamsAddOns","MicrosoftTeamsSettingsOperation",
+    "OneDrive","PowerBIAudit","SecurityComplianceCenterEOPCmdlet","SharePoint",
+    "SharePointFileOperation","SharePointSharingOperation",
+    "SkypeForBusinessCmdlets","SkypeForBusinessPSTNUsage",
+    "SkypeForBusinessUsersBlocked","Sway","ThreatIntelligence","Yammer")
+
 $results = Search-UnifiedAuditLog -StartDate (get-date).AddMinutes(-60) -EndDate (get-date) -SessionCommand ReturnLargeSet -ResultSize 5000
     #-RecordType AzureActiveDirectoryAccountLogon
 $results | Out-File result.txt
